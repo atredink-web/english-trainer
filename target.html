@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Английский - тренировка слов</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+    text-align: center;
+    padding-top: 50px;
+  }
+  h1 { color: #333; }
+  .level-btn, .option-btn {
+    display: block;
+    width: 200px;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .level-btn { background-color: #2196F3; color: white; }
+  .level-btn:hover { background-color: #0b7dda; }
+  .option-btn { background-color: #4CAF50; color: white; }
+  .option-btn:hover { background-color: #45a049; }
+  .word-box { font-size: 28px; font-weight: bold; margin: 30px; color: #222; }
+  #score { font-size: 18px; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h1>Выберите уровень английского</h1>
+<button class="level-btn" onclick="startLevel('A1')">A1</button>
+<button class="level-btn" onclick="startLevel('A2')">A2</button>
+
+<div id="training" style="display:none;">
+  <div class="word-box" id="wordBox">Слово</div>
+  <button class="option-btn" id="option1" onclick="checkAnswer(this)"></button>
+  <button class="option-btn" id="option2" onclick="checkAnswer(this)"></button>
+  <button class="option-btn" id="option3" onclick="checkAnswer(this)"></button>
+  <div id="score">Правильно: 0 / 0</div>
+</div>
+
+<script>
+  let words = [];
+  const wordsA1 = [
+    {eng: "apple", rus: "яблоко"},
+    {eng: "book", rus: "книга"},
+    {eng: "cat", rus: "кот"},
+    {eng: "dog", rus: "собака"},
+    {eng: "house", rus: "дом"},
+    {eng: "car", rus: "машина"},
+    {eng: "water", rus: "вода"},
+    {eng: "sun", rus: "солнце"},
+    {eng: "milk", rus: "молоко"}
+  ];
+
+  const wordsA2 = [
+    {eng: "word building", rus: "словообразование"},
+    {eng: "part of speech", rus: "часть речи"},
+    {eng: "dictionary entry", rus: "словарная статья"},
+    {eng: "suffix", rus: "суффикс"},
+    {eng: "verb", rus: "глагол"},
+    {eng: "noun", rus: "существительное"},
+    {eng: "countable", rus: "исчисляемый"},
+    {eng: "uncountable", rus: "неисчисляемый"},
+    {eng: "example", rus: "пример"},
+    {eng: "meaning", rus: "значение"},
+    {eng: "exploration", rus: "исследование"},
+    {eng: "attempt", rus: "попытка"},
+    {eng: "youngest", rus: "самый молодой"},
+    {eng: "complete", rus: "завершить"},
+    {eng: "desert", rus: "пустыня"},
+    {eng: "achievement", rus: "достижение"},
+    {eng: "challenge", rus: "испытание"},
+    {eng: "continent", rus: "континент"},
+    {eng: "circumnavigate", rus: "обогнуть вокруг"},
+    {eng: "theory", rus: "теория"},
+    {eng: "thunder (noun)", rus: "гром"},
+    {eng: "thunder (verb)", rus: "греметь"},
+    {eng: "lightning", rus: "молния"},
+    {eng: "storm", rus: "буря"},
+    {eng: "crash", rus: "грохот"},
+    {eng: "entertain", rus: "развлекать"},
+    {eng: "entertainment", rus: "развлечение"},
+    {eng: "erupt", rus: "извергаться"},
+    {eng: "eruption", rus: "извержение"},
+    {eng: "examine", rus: "осматривать"},
+    {eng: "examination", rus: "экзамен"},
+    {eng: "motivate", rus: "мотивировать"},
+    {eng: "motivation", rus: "мотивация"},
+    {eng: "relax", rus: "расслабляться"},
+    {eng: "relaxation", rus: "расслабление"},
+    {eng: "rescue", rus: "спасать"},
+    {eng: "accomplish", rus: "достигать"},
+    {eng: "employ", rus: "нанимать"},
+    {eng: "preparing", rus: "подготовка"},
+    {eng: "difficult", rus: "сложный"},
+    {eng: "risk", rus: "риск"},
+    {eng: "develop", rus: "развивать"},
+    {eng: "personal skills", rus: "личные навыки"},
+    {eng: "imagine", rus: "представлять"},
+    {eng: "understand", rus: "понимать"},
+    {eng: "dream", rus: "мечтать"},
+    {eng: "famous", rus: "знаменитый"},
+    {eng: "agree", rus: "соглашаться"},
+    {eng: "disagree", rus: "не соглашаться"},
+    {eng: "discussion", rus: "обсуждение"}
+  ];
+
+  let currentWord = {};
+  let correct = 0;
+  let total = 0;
+
+  function startLevel(level) {
+    if(level === "A1") words = wordsA1;
+    else if(level === "A2") words = wordsA2;
+
+    document.querySelectorAll(".level-btn").forEach(btn => btn.style.display = "none");
+    document.getElementById("training").style.display = "block";
+    nextWord();
+  }
+
+  function nextWord() {
+    const randomIndex = Math.floor(Math.random() * words.length);
+    currentWord = words[randomIndex];
+
+    document.getElementById("wordBox").textContent = currentWord.eng;
+
+    // 3 варианта ответов
+    let options = [currentWord.rus];
+    while(options.length < 3) {
+      const wrongIndex = Math.floor(Math.random() * words.length);
+      const wrongWord = words[wrongIndex].rus;
+      if(!options.includes(wrongWord)) options.push(wrongWord);
+    }
+
+    options.sort(() => Math.random() - 0.5);
+
+    document.getElementById("option1").textContent = options[0];
+    document.getElementById("option2").textContent = options[1];
+    document.getElementById("option3").textContent = options[2];
+  }
+
+  function checkAnswer(button) {
+    total++;
+    if(button.textContent === currentWord.rus) correct++;
+    alert(button.textContent === currentWord.rus ? "Правильно!" : `Неправильно! Правильный ответ: ${currentWord.rus}`);
+    document.getElementById("score").textContent = `Правильно: ${correct} / ${total}`;
+    nextWord();
+  }
+</script>
+
+</body>
+</html>
